@@ -47,7 +47,7 @@ while True:
             if event.key == K_LEFT:
                 direcao = LEFT
 
-    ### Autoplay ####
+    #### Autoplay ####
     direcao = autoplay(snake[0], maca_pos, direcao)
     #################
 
