@@ -2,6 +2,9 @@ import pygame, random
 from pygame.locals import *
 from autoplay import *
 
+
+pygame.init()
+
 print('\x1b[2J\x1b[1;1H')
 
 def colisao (c1,c2):
@@ -12,7 +15,6 @@ RIGHT = 1
 DOWN = 2
 LEFT = 3
 
-pygame.init()
 screen = pygame.display.set_mode((600,600))
 pygame.display.set_caption('Snake')
 
