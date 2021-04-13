@@ -1,48 +1,69 @@
-import pygame
-from time import sleep
+import pygame, random
+from pygame.locals import *
 
+def colisao (c1,c2):
+    return (c1[0] == c2[0]) and (c1[1] == c2[1])
 
-campo = (100,100) # largura, comprimento
-frutinhas = [(15,22),(89,68),(50,71),(11,85),(94,52)] # x , y
+UP = 0
+RIGHT = 1
+DOWN = 2
+LEFT = 3
 
-class snake:
-    def __init__(self):
-        self.tamanhoinicial = 1
-        self.tamanho = self.tamanhoinicial
-        self.cabeca = (50,50) # posição da cabeça
-        self.distancia_da_parede = 50
-        self.distancia_da_parede_direita = 30
-        self.distancia_da_parede_esquerda = 30
+pygame.init()
+screen = pygame.display.set_mode((600,600))
+pygame.display.set_caption('Snake')
 
-    def se_move(self):
-        entrada_do_usuario = input().lower()
-        if entrada_do_usuario == 'w':
-            self.distancia_da_parede -= 1
+snake = [(200,200), (210,200), (220,200)]
+snake_skin = pygame.Surface((10,10))
+snake_skin.fill((100,255,90))
 
-        if entrada_do_usuario == 'd':
-            self.distancia_da_parede_direita -= 1
-        
-        elif entrada_do_usuario == 'e':
-            self.distancia_da_parede_esquerda -= 1
+maca_pos = (random.randint(0,59)*10,random.randint(0,59)*10)
+maca = pygame.Surface((10,10))
+maca.fill((255,0,0))
 
-    def come(self):
-        if self.cabeca in frutinhas: 
-            self.tamanho += 1
-    
-    def morre(self):
-        if self.distancia_da_parede <= 0:
-            self.tamanho = 0
-            print('Você perdeu!!!')
+direcao = LEFT
 
-
-cobra = snake()
+clock = pygame.time.Clock()
 
 while True:
-    sleep(0.10)
-    cobra.se_move()
-    cobra.come()
-    cobra.morre()
-    print(cobra.distancia_da_parede)
-    print(cobra.distancia_da_parede_direita)
-    print(cobra.distancia_da_parede_esquerda)
+    clock.tick(20)
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
 
+        if event.type == KEYDOWN:
+            if event.key == K_UP:
+                direcao = UP
+            if event.key == K_DOWN:
+                direcao = DOWN
+            if event.key == K_RIGHT:
+                direcao = RIGHT
+            if event.key == K_LEFT:
+                direcao = LEFT
+
+    if colisao(snake[0], maca_pos):
+        maca_pos = (random.randint(0,59)*10,random.randint(0,59)*10)
+        snake.append((0,0))
+
+    if snake[0][0] < 0 or snake[0][0] > 590 or snake[0][1] < 0 or snake[0][1] > 590: #morre na colisão com a parede
+        print('morreu!')
+        exit()
+
+    for i in range(len(snake) -1, 0, -1):
+        snake[i] = (snake[i-1][0], snake[i-1][1])
+
+    if direcao == UP:
+        snake[0] = (snake[0][0], snake[0][1] - 10)
+    if direcao == DOWN:
+        snake[0] = (snake[0][0], snake[0][1] + 10)
+    if direcao == RIGHT:
+        snake[0] = (snake[0][0] + 10, snake[0][1])
+    if direcao == LEFT:
+        snake[0] = (snake[0][0] - 10, snake[0][1])
+
+    screen.fill((0,0,0))
+    screen.blit(maca, maca_pos)
+    for pos in snake:
+        screen.blit(snake_skin,pos)
+
+    pygame.display.update()
