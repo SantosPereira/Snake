@@ -1,5 +1,8 @@
 import pygame, random
 from pygame.locals import *
+from autoplay import *
+
+print('\x1b[2J\x1b[1;1H')
 
 def colisao (c1,c2):
     return (c1[0] == c2[0]) and (c1[1] == c2[1])
@@ -22,11 +25,12 @@ maca = pygame.Surface((10,10))
 maca.fill((255,0,0))
 
 direcao = LEFT
-
 clock = pygame.time.Clock()
 
+print('\033[1;31mPontuação:\033[;0m ')
+
 while True:
-    clock.tick(20)
+    clock.tick(15)
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
@@ -41,9 +45,16 @@ while True:
             if event.key == K_LEFT:
                 direcao = LEFT
 
+    ### Autoplay ####
+    direcao = autoplay(snake[0], maca_pos, direcao)
+    #################
+
     if colisao(snake[0], maca_pos):
         maca_pos = (random.randint(0,59)*10,random.randint(0,59)*10)
         snake.append((0,0))
+        pontuacao = len(snake)
+        print('\x1b[2J\x1b[1;1H\033[1;31mPontuação:\033[;0m ', pontuacao)
+
 
     if snake[0][0] < 0 or snake[0][0] > 590 or snake[0][1] < 0 or snake[0][1] > 590: #morre na colisão com a parede
         print('morreu!')
@@ -65,5 +76,5 @@ while True:
     screen.blit(maca, maca_pos)
     for pos in snake:
         screen.blit(snake_skin,pos)
-
+    
     pygame.display.update()
