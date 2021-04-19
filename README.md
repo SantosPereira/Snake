@@ -9,6 +9,6 @@ Famoso "jogo da cobrinha" feito em python com pygame.
 
 ### Modo de Instalação:
 
-~~~
+```shell
 PS pip install pygame
-~~~
+```
